@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import OverdueIndicator from './OverdueIndicator';
 
 function TodoCard({ todo, onToggle, onEdit, onDelete, isLoading }) {
   const [isEditing, setIsEditing] = useState(false);
@@ -124,6 +125,12 @@ function TodoCard({ todo, onToggle, onEdit, onDelete, isLoading }) {
             Due: {formatDate(todo.dueDate)}
           </p>
         )}
+        {/* Show overdue indicator for incomplete overdue todos */}
+        <OverdueIndicator
+          isOverdue={todo.isOverdue}
+          overdueDays={todo.overdueDays}
+          overdueDuration={todo.overdueDuration}
+        />
       </div>
 
       <div className="todo-actions">

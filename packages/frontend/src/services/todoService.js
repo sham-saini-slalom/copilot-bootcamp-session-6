@@ -7,12 +7,28 @@ const API_BASE_URL = '/api';
 
 class TodoService {
   /**
-   * Get all todos
+   * Get all todos with optional filtering and sorting
+   * @param {string} filter - Filter option ('all' or 'overdue')
+   * @param {string} sort - Sort option ('recent' or 'overdue-desc')
    * @returns {Promise<Array>} Array of todo objects
    */
-  static async getAllTodos() {
+  static async getAllTodos(filter = 'all', sort = 'recent') {
     try {
-      const response = await fetch(`${API_BASE_URL}/todos`);
+      // Build query parameters
+      const params = new URLSearchParams();
+      
+      if (filter === 'overdue') {
+        params.append('filter', 'overdue');
+      }
+      
+      if (sort === 'overdue-desc') {
+        params.append('sort', 'overdue-desc');
+      }
+      
+      const queryString = params.toString();
+      const url = queryString ? `${API_BASE_URL}/todos?${queryString}` : `${API_BASE_URL}/todos`;
+      
+      const response = await fetch(url);
       if (!response.ok) {
         throw new Error(`Failed to fetch todos: ${response.statusText}`);
       }

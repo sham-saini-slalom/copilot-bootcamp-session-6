@@ -2,6 +2,7 @@ const express = require('express');
 const cors = require('cors');
 const morgan = require('morgan');
 const Database = require('better-sqlite3');
+const { enhanceTodoWithOverdueFields } = require('./services/todoService');
 
 // Initialize express app
 const app = express();
@@ -43,8 +44,36 @@ console.log('In-memory database initialized with sample todos');
 // API Routes
 app.get('/api/todos', (req, res) => {
   try {
-    const todos = db.prepare('SELECT * FROM todos ORDER BY createdAt DESC').all();
-    res.json(todos);
+    const { filter, sort } = req.query;
+    
+    let todos = db.prepare('SELECT * FROM todos ORDER BY createdAt DESC').all();
+    
+    // Enhance each todo with computed overdue fields
+    let enhancedTodos = todos.map(todo => enhanceTodoWithOverdueFields(todo));
+    
+    // Apply filter if specified
+    if (filter === 'overdue') {
+      enhancedTodos = enhancedTodos.filter(todo => todo.isOverdue === true);
+    }
+    
+    // Apply sort if specified
+    if (sort === 'overdue-desc') {
+      enhancedTodos.sort((a, b) => {
+        // Overdue todos come first, sorted by overdueDays descending
+        if (a.isOverdue && !b.isOverdue) return -1;
+        if (!a.isOverdue && b.isOverdue) return 1;
+        
+        // Both overdue: sort by overdueDays descending (most overdue first)
+        if (a.isOverdue && b.isOverdue) {
+          return (b.overdueDays || 0) - (a.overdueDays || 0);
+        }
+        
+        // Both not overdue: maintain original order
+        return 0;
+      });
+    }
+    
+    res.json(enhancedTodos);
   } catch (error) {
     console.error('Error fetching todos:', error);
     res.status(500).json({ error: 'Failed to fetch todos' });
@@ -64,7 +93,9 @@ app.get('/api/todos/:id', (req, res) => {
       return res.status(404).json({ error: 'Todo not found' });
     }
 
-    res.json(todo);
+    // Enhance todo with computed overdue fields
+    const enhancedTodo = enhanceTodoWithOverdueFields(todo);
+    res.json(enhancedTodo);
   } catch (error) {
     console.error('Error fetching todo:', error);
     res.status(500).json({ error: 'Failed to fetch todo' });
@@ -88,7 +119,9 @@ app.post('/api/todos', (req, res) => {
     const id = result.lastInsertRowid;
 
     const newTodo = db.prepare('SELECT * FROM todos WHERE id = ?').get(id);
-    res.status(201).json(newTodo);
+    // Enhance todo with computed overdue fields
+    const enhancedTodo = enhanceTodoWithOverdueFields(newTodo);
+    res.status(201).json(enhancedTodo);
   } catch (error) {
     console.error('Error creating todo:', error);
     res.status(500).json({ error: 'Failed to create todo' });
@@ -124,7 +157,9 @@ app.put('/api/todos/:id', (req, res) => {
     stmt.run(newTitle, newDueDate || null, id);
 
     const updatedTodo = db.prepare('SELECT * FROM todos WHERE id = ?').get(id);
-    res.json(updatedTodo);
+    // Enhance todo with computed overdue fields
+    const enhancedTodo = enhanceTodoWithOverdueFields(updatedTodo);
+    res.json(enhancedTodo);
   } catch (error) {
     console.error('Error updating todo:', error);
     res.status(500).json({ error: 'Failed to update todo' });
@@ -149,7 +184,9 @@ app.patch('/api/todos/:id/toggle', (req, res) => {
     stmt.run(newCompleted, id);
 
     const updatedTodo = db.prepare('SELECT * FROM todos WHERE id = ?').get(id);
-    res.json(updatedTodo);
+    // Enhance todo with computed overdue fields
+    const enhancedTodo = enhanceTodoWithOverdueFields(updatedTodo);
+    res.json(enhancedTodo);
   } catch (error) {
     console.error('Error toggling todo status:', error);
     res.status(500).json({ error: 'Failed to toggle todo status' });

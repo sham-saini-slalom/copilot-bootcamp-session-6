@@ -10,6 +10,8 @@ function App() {
   const [todos, setTodos] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [filter, setFilter] = useState('all');
+  const [sort, setSort] = useState('recent');
   const [theme, setTheme] = useState(() => {
     const savedTheme = localStorage.getItem('todoAppTheme');
     if (savedTheme) {
@@ -28,16 +30,16 @@ function App() {
     localStorage.setItem('todoAppTheme', theme);
   }, [theme]);
 
-  // Fetch todos on mount
+  // Fetch todos on mount and when filter/sort changes
   useEffect(() => {
     fetchTodos();
-  }, []);
+  }, [filter, sort]);
 
   const fetchTodos = async () => {
     try {
       setLoading(true);
       setError(null);
-      const data = await TodoService.getAllTodos();
+      const data = await TodoService.getAllTodos(filter, sort);
       setTodos(data);
     } catch (err) {
       console.error('Error fetching todos:', err);
@@ -112,6 +114,14 @@ function App() {
     setTheme(theme === 'light' ? 'dark' : 'light');
   };
 
+  const handleFilterChange = (newFilter) => {
+    setFilter(newFilter);
+  };
+
+  const handleSortChange = (newSort) => {
+    setSort(newSort);
+  };
+
   return (
     <div className="app">
       <header className="app-header">
@@ -151,6 +161,10 @@ function App() {
               onEdit={handleEditTodo}
               onDelete={handleDeleteTodo}
               isLoading={isDeleting}
+              filter={filter}
+              sort={sort}
+              onFilterChange={handleFilterChange}
+              onSortChange={handleSortChange}
             />
           )}
         </div>

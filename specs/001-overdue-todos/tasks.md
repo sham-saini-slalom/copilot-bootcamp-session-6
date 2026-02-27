@@ -39,16 +39,16 @@ description: "Task list for Overdue Todo Items feature implementation"
 
 ### Backend Date Utilities Tests (Write FIRST - Must FAIL)
 
-- [ ] T004 [P] Write unit tests for `isOverdue()` in `packages/backend/__tests__/services/todoService.test.js`
-- [ ] T005 [P] Write unit tests for `getOverdueDays()` in `packages/backend/__tests__/services/todoService.test.js`
-- [ ] T006 [P] Write unit tests for `formatOverdueDuration()` in `packages/backend/__tests__/services/todoService.test.js`
+- [X] T004 [P] Write unit tests for `isOverdue()` in `packages/backend/__tests__/services/todoService.test.js`
+- [X] T005 [P] Write unit tests for `getOverdueDays()` in `packages/backend/__tests__/services/todoService.test.js`
+- [X] T006 [P] Write unit tests for `formatOverdueDuration()` in `packages/backend/__tests__/services/todoService.test.js`
 
 ### Backend Date Utilities Implementation
 
-- [ ] T007 Implement `isOverdue()` function in `packages/backend/src/services/todoService.js`
-- [ ] T008 Implement `getOverdueDays()` function in `packages/backend/src/services/todoService.js`
-- [ ] T009 Implement `formatOverdueDuration()` function in `packages/backend/src/services/todoService.js`
-- [ ] T010 Implement `enhanceTodoWithOverdueFields()` helper in `packages/backend/src/services/todoService.js`
+- [X] T007 Implement `isOverdue()` function in `packages/backend/src/services/todoService.js`
+- [X] T008 Implement `getOverdueDays()` function in `packages/backend/src/services/todoService.js`
+- [X] T009 Implement `formatOverdueDuration()` function in `packages/backend/src/services/todoService.js`
+- [X] T010 Implement `enhanceTodoWithOverdueFields()` helper in `packages/backend/src/services/todoService.js`
 
 **Checkpoint**: Foundation ready - user story implementation can now begin in parallel
 
@@ -69,35 +69,35 @@ description: "Task list for Overdue Todo Items feature implementation"
 
 ### Backend API Enhancement Tests (Write FIRST - Must FAIL)
 
-- [ ] T011 [P] [US1] Write API integration test for GET /api/todos returning computed overdue fields in `packages/backend/__tests__/app.test.js`
-- [ ] T012 [P] [US1] Write API integration test for GET /api/todos/:id returning computed overdue fields in `packages/backend/__tests__/app.test.js`
-- [ ] T013 [P] [US1] Write API integration test for POST /api/todos returning computed overdue fields in `packages/backend/__tests__/app.test.js`
-- [ ] T014 [P] [US1] Write API integration test for PUT /api/todos/:id recalculating overdue fields in `packages/backend/__tests__/app.test.js`
+- [X] T011 [P] [US1] Write API integration test for GET /api/todos returning computed overdue fields in `packages/backend/__tests__/app.test.js`
+- [X] T012 [P] [US1] Write API integration test for GET /api/todos/:id returning computed overdue fields in `packages/backend/__tests__/app.test.js`
+- [X] T013 [P] [US1] Write API integration test for POST /api/todos returning computed overdue fields in `packages/backend/__tests__/app.test.js`
+- [X] T014 [P] [US1] Write API integration test for PUT /api/todos/:id recalculating overdue fields in `packages/backend/__tests__/app.test.js`
 
 ### Backend API Enhancement Implementation
 
-- [ ] T015 [US1] Enhance GET /api/todos endpoint to include computed overdue fields in `packages/backend/src/app.js`
-- [ ] T016 [US1] Enhance GET /api/todos/:id endpoint to include computed overdue fields in `packages/backend/src/app.js`
-- [ ] T017 [US1] Enhance POST /api/todos endpoint to include computed overdue fields in `packages/backend/src/app.js`
-- [ ] T018 [US1] Enhance PUT /api/todos/:id endpoint to recalculate overdue fields in `packages/backend/src/app.js`
+- [X] T015 [US1] Enhance GET /api/todos endpoint to include computed overdue fields in `packages/backend/src/app.js`
+- [X] T016 [US1] Enhance GET /api/todos/:id endpoint to include computed overdue fields in `packages/backend/src/app.js`
+- [X] T017 [US1] Enhance POST /api/todos endpoint to include computed overdue fields in `packages/backend/src/app.js`
+- [X] T018 [US1] Enhance PUT /api/todos/:id endpoint to recalculate overdue fields in `packages/backend/src/app.js`
 
 ### Frontend Component Tests (Write FIRST - Must FAIL)
 
-- [ ] T019 [P] [US1] Write component tests for OverdueIndicator in `packages/frontend/src/components/__tests__/OverdueIndicator.test.js`
-- [ ] T020 [P] [US1] Write updated TodoCard tests including OverdueIndicator in `packages/frontend/src/components/__tests__/TodoCard.test.js`
+- [X] T019 [P] [US1] Write component tests for OverdueIndicator in `packages/frontend/src/components/__tests__/OverdueIndicator.test.js`
+- [X] T020 [P] [US1] Write updated TodoCard tests including OverdueIndicator in `packages/frontend/src/components/__tests__/TodoCard.test.js`
 
 ### Frontend Component Implementation
 
-- [ ] T021 [US1] Create OverdueIndicator component in `packages/frontend/src/components/OverdueIndicator.js`
-- [ ] T022 [US1] Create OverdueIndicator styles with accessibility (icon + text, WCAG AA contrast) in `packages/frontend/src/components/OverdueIndicator.css`
-- [ ] T023 [US1] Integrate OverdueIndicator into TodoCard component in `packages/frontend/src/components/TodoCard.js`
-- [ ] T024 [US1] Update TodoCard styles for overdue indicator layout in `packages/frontend/src/components/TodoCard.css`
+- [X] T021 [US1] Create OverdueIndicator component in `packages/frontend/src/components/OverdueIndicator.js`
+- [X] T022 [US1] Create OverdueIndicator styles with accessibility (icon + text, WCAG AA contrast) in `packages/frontend/src/components/OverdueIndicator.css`
+- [X] T023 [US1] Integrate OverdueIndicator into TodoCard component in `packages/frontend/src/components/TodoCard.js`
+- [X] T024 [US1] Update TodoCard styles for overdue indicator layout in `packages/frontend/src/components/TodoCard.css`
 
 ### Integration Validation
 
-- [ ] T025 [US1] Manual testing: Create todos with various overdue states per quickstart.md test scenarios
-- [ ] T026 [US1] Accessibility testing: Verify screen reader announcements and ARIA labels
-- [ ] T027 [US1] Visual testing: Verify indicator works in both light and dark themes
+- [X] T025 [US1] Manual testing: Create todos with various overdue states per quickstart.md test scenarios
+- [X] T026 [US1] Accessibility testing: Verify screen reader announcements and ARIA labels
+- [X] T027 [US1] Visual testing: Verify indicator works in both light and dark themes
 
 **Checkpoint**: User Story 1 (MVP) is complete - overdue tasks are visually identifiable
 
@@ -120,17 +120,17 @@ description: "Task list for Overdue Todo Items feature implementation"
 
 ### Frontend Enhancement Tests (Write FIRST - Must FAIL)
 
-- [ ] T028 [P] [US2] Write tests for duration formatting display in OverdueIndicator in `packages/frontend/src/components/__tests__/OverdueIndicator.test.js`
+- [X] T028 [P] [US2] Write tests for duration formatting display in OverdueIndicator in `packages/frontend/src/components/__tests__/OverdueIndicator.test.js`
 
 ### Frontend Enhancement Implementation
 
-- [ ] T029 [US2] Verify OverdueIndicator displays `overdueDuration` prop correctly in `packages/frontend/src/components/OverdueIndicator.js`
-- [ ] T030 [US2] Update OverdueIndicator styles for duration text formatting in `packages/frontend/src/components/OverdueIndicator.css`
+- [X] T029 [US2] Verify OverdueIndicator displays `overdueDuration` prop correctly in `packages/frontend/src/components/OverdueIndicator.js`
+- [X] T030 [US2] Update OverdueIndicator styles for duration text formatting in `packages/frontend/src/components/OverdueIndicator.css`
 
 ### Integration Validation
 
-- [ ] T031 [US2] Manual testing: Verify duration display for 1 day, 7 days, 30 days, 31 days, 365+ days
-- [ ] T032 [US2] Edge case testing: Verify very old overdue items display "1+ year"
+- [X] T031 [US2] Manual testing: Verify duration display for 1 day, 7 days, 30 days, 31 days, 365+ days
+- [X] T032 [US2] Edge case testing: Verify very old overdue items display "1+ year"
 
 **Checkpoint**: User Story 2 is complete - users see clear duration context for overdue items
 
@@ -150,37 +150,37 @@ description: "Task list for Overdue Todo Items feature implementation"
 
 ### Backend API Tests (Write FIRST - Must FAIL)
 
-- [ ] T033 [P] [US3] Write API integration test for GET /api/todos?filter=overdue in `packages/backend/__tests__/app.test.js`
-- [ ] T034 [P] [US3] Write API integration test for GET /api/todos?sort=overdue-desc in `packages/backend/__tests__/app.test.js`
+- [X] T033 [P] [US3] Write API integration test for GET /api/todos?filter=overdue in `packages/backend/__tests__/app.test.js`
+- [X] T034 [P] [US3] Write API integration test for GET /api/todos?sort=overdue-desc in `packages/backend/__tests__/app.test.js`
 
 ### Backend API Implementation
 
-- [ ] T035 [US3] Add query parameter support for filter=overdue to GET /api/todos in `packages/backend/src/app.js`
-- [ ] T036 [US3] Add query parameter support for sort=overdue-desc to GET /api/todos in `packages/backend/src/app.js`
-- [ ] T037 [US3] Update todoService to support filtering by overdue status in `packages/backend/src/services/todoService.js`
-- [ ] T038 [US3] Update todoService to support sorting by overdue duration in `packages/backend/src/services/todoService.js`
+- [X] T035 [US3] Add query parameter support for filter=overdue to GET /api/todos in `packages/backend/src/app.js`
+- [X] T036 [US3] Add query parameter support for sort=overdue-desc to GET /api/todos in `packages/backend/src/app.js`
+- [X] T037 [US3] Update todoService to support filtering by overdue status in `packages/backend/src/services/todoService.js`
+- [X] T038 [US3] Update todoService to support sorting by overdue duration in `packages/backend/src/services/todoService.js`
 
 ### Frontend Component Tests (Write FIRST - Must FAIL)
 
-- [ ] T039 [P] [US3] Write tests for filter controls in TodoList in `packages/frontend/src/components/__tests__/TodoList.test.js`
-- [ ] T040 [P] [US3] Write tests for sort controls in TodoList in `packages/frontend/src/components/__tests__/TodoList.test.js`
-- [ ] T041 [P] [US3] Write tests for empty state "No overdue todos" in TodoList in `packages/frontend/src/components/__tests__/TodoList.test.js`
+- [X] T039 [P] [US3] Write tests for filter controls in TodoList in `packages/frontend/src/components/__tests__/TodoList.test.js`
+- [X] T040 [P] [US3] Write tests for sort controls in TodoList in `packages/frontend/src/components/__tests__/TodoList.test.js`
+- [X] T041 [P] [US3] Write tests for empty state "No overdue todos" in TodoList in `packages/frontend/src/components/__tests__/TodoList.test.js`
 
 ### Frontend Component Implementation
 
-- [ ] T042 [US3] Add filter dropdown UI to TodoList component in `packages/frontend/src/components/TodoList.js`
-- [ ] T043 [US3] Add sort dropdown UI to TodoList component in `packages/frontend/src/components/TodoList.js`
-- [ ] T044 [US3] Implement filter logic to call API with filter=overdue in `packages/frontend/src/services/todoService.js`
-- [ ] T045 [US3] Implement sort logic to call API with sort=overdue-desc in `packages/frontend/src/services/todoService.js`
-- [ ] T046 [US3] Add "No overdue todos" empty state message to TodoList in `packages/frontend/src/components/TodoList.js`
-- [ ] T047 [US3] Add styles for filter/sort controls in `packages/frontend/src/components/TodoList.css`
+- [X] T042 [US3] Add filter dropdown UI to TodoList component in `packages/frontend/src/components/TodoList.js`
+- [X] T043 [US3] Add sort dropdown UI to TodoList component in `packages/frontend/src/components/TodoList.js`
+- [X] T044 [US3] Implement filter logic to call API with filter=overdue in `packages/frontend/src/services/todoService.js`
+- [X] T045 [US3] Implement sort logic to call API with sort=overdue-desc in `packages/frontend/src/services/todoService.js`
+- [X] T046 [US3] Add "No overdue todos" empty state message to TodoList in `packages/frontend/src/components/TodoList.js`
+- [X] T047 [US3] Add styles for filter/sort controls in `packages/frontend/src/components/TodoList.css`
 
 ### Integration Validation
 
-- [ ] T048 [US3] Manual testing: Apply overdue filter and verify correct filtering
-- [ ] T049 [US3] Manual testing: Apply sort and verify correct ordering
-- [ ] T050 [US3] Manual testing: Complete overdue todo while filter active, verify removal
-- [ ] T051 [US3] Accessibility testing: Verify filter/sort controls are keyboard accessible
+- [X] T048 [US3] Manual testing: Apply overdue filter and verify correct filtering
+- [X] T049 [US3] Manual testing: Apply sort and verify correct ordering
+- [X] T050 [US3] Manual testing: Complete overdue todo while filter active, verify removal
+- [X] T051 [US3] Accessibility testing: Verify filter/sort controls are keyboard accessible
 
 **Checkpoint**: User Story 3 is complete - users can filter and sort overdue items efficiently
 
@@ -190,13 +190,13 @@ description: "Task list for Overdue Todo Items feature implementation"
 
 **Purpose**: Improvements that affect multiple user stories and final validation
 
-- [ ] T052 [P] Performance testing: Verify overdue calculation for 1000 todos completes in <1 second
-- [ ] T053 [P] Update API documentation in contracts/api-contract.md with final implementation details
-- [ ] T054 [P] Add code comments for date handling functions per coding guidelines
-- [ ] T055 Verify all tests pass: Run `npm test` from workspace root (target: 80%+ coverage)
-- [ ] T056 Code cleanup: Remove any console.logs and debugging code
-- [ ] T057 Run full quickstart.md validation workflow
-- [ ] T058 Update README.md with overdue feature documentation (if project README exists)
+- [X] T052 [P] Performance testing: Verify overdue calculation for 1000 todos completes in <1 second
+- [X] T053 [P] Update API documentation in contracts/api-contract.md with final implementation details
+- [X] T054 [P] Add code comments for date handling functions per coding guidelines
+- [X] T055 Verify all tests pass: Run `npm test` from workspace root (target: 80%+ coverage)
+- [X] T056 Code cleanup: Remove any console.logs and debugging code
+- [X] T057 Run full quickstart.md validation workflow
+- [X] T058 Update README.md with overdue feature documentation (if project README exists)
 
 ---
 

@@ -27,6 +27,72 @@ describe('TodoService', () => {
       expect(result).toEqual(mockTodos);
     });
 
+    it('should fetch todos with filter=overdue parameter', async () => {
+      const mockTodos = [
+        { id: 1, title: 'Overdue Todo', completed: 0, isOverdue: true }
+      ];
+
+      global.fetch.mockResolvedValueOnce({
+        ok: true,
+        json: async () => mockTodos
+      });
+
+      const result = await TodoService.getAllTodos('overdue', 'recent');
+
+      expect(global.fetch).toHaveBeenCalledWith('/api/todos?filter=overdue');
+      expect(result).toEqual(mockTodos);
+    });
+
+    it('should fetch todos with sort=overdue-desc parameter', async () => {
+      const mockTodos = [
+        { id: 1, title: 'Most Overdue', overdueDays: 30 },
+        { id: 2, title: 'Less Overdue', overdueDays: 7 }
+      ];
+
+      global.fetch.mockResolvedValueOnce({
+        ok: true,
+        json: async () => mockTodos
+      });
+
+      const result = await TodoService.getAllTodos('all', 'overdue-desc');
+
+      expect(global.fetch).toHaveBeenCalledWith('/api/todos?sort=overdue-desc');
+      expect(result).toEqual(mockTodos);
+    });
+
+    it('should fetch todos with both filter and sort parameters', async () => {
+      const mockTodos = [
+        { id: 1, title: 'Most Overdue', isOverdue: true, overdueDays: 30 },
+        { id: 2, title: 'Less Overdue', isOverdue: true, overdueDays: 7 }
+      ];
+
+      global.fetch.mockResolvedValueOnce({
+        ok: true,
+        json: async () => mockTodos
+      });
+
+      const result = await TodoService.getAllTodos('overdue', 'overdue-desc');
+
+      expect(global.fetch).toHaveBeenCalledWith('/api/todos?filter=overdue&sort=overdue-desc');
+      expect(result).toEqual(mockTodos);
+    });
+
+    it('should not add query parameters when filter=all and sort=recent', async () => {
+      const mockTodos = [
+        { id: 1, title: 'Todo 1' }
+      ];
+
+      global.fetch.mockResolvedValueOnce({
+        ok: true,
+        json: async () => mockTodos
+      });
+
+      const result = await TodoService.getAllTodos('all', 'recent');
+
+      expect(global.fetch).toHaveBeenCalledWith('/api/todos');
+      expect(result).toEqual(mockTodos);
+    });
+
     it('should throw error when fetch fails', async () => {
       global.fetch.mockResolvedValueOnce({
         ok: false,

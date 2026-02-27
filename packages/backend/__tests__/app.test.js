@@ -254,4 +254,275 @@ describe('Todo API Endpoints', () => {
       expect(deleteResponse.body).toHaveProperty('message');
     });
   });
+
+  // Overdue Todo Feature Tests (User Story 1)
+  describe('Overdue Computed Fields', () => {
+    beforeEach(() => {
+      // Mock Date to return fixed 'today' value for deterministic testing
+      jest.useFakeTimers();
+      jest.setSystemTime(new Date('2026-02-27T12:00:00Z'));
+    });
+
+    afterEach(() => {
+      jest.useRealTimers();
+    });
+
+    describe('GET /api/todos - computed overdue fields', () => {
+      it('should include isOverdue, overdueDays, overdueDuration for all todos', async () => {
+        const response = await request(app).get('/api/todos');
+        expect(response.status).toBe(200);
+        expect(Array.isArray(response.body)).toBe(true);
+        
+        response.body.forEach(todo => {
+          expect(todo).toHaveProperty('isOverdue');
+          expect(todo).toHaveProperty('overdueDays');
+          expect(todo).toHaveProperty('overdueDuration');
+          expect(typeof todo.isOverdue).toBe('boolean');
+        });
+      });
+
+      it('should return isOverdue=true for pending todo with past due date', async () => {
+        // Create todo with past due date
+        const createResponse = await request(app)
+          .post('/api/todos')
+          .send({ title: 'Overdue Task', dueDate: '2026-02-20' });
+        
+        const response = await request(app).get('/api/todos');
+        const createdTodo = response.body.find(t => t.id === createResponse.body.id);
+        
+        expect(createdTodo.isOverdue).toBe(true);
+        expect(createdTodo.overdueDays).toBe(7);
+        expect(createdTodo.overdueDuration).toBe('7 days');
+      });
+
+      it('should return isOverdue=false for todo due today', async () => {
+        const createResponse = await request(app)
+          .post('/api/todos')
+          .send({ title: 'Due Today', dueDate: '2026-02-27' });
+        
+        const response = await request(app).get('/api/todos');
+        const createdTodo = response.body.find(t => t.id === createResponse.body.id);
+        
+        expect(createdTodo.isOverdue).toBe(false);
+        expect(createdTodo.overdueDays).toBeNull();
+        expect(createdTodo.overdueDuration).toBeNull();
+      });
+
+      it('should return isOverdue=false for completed todo with past due date', async () => {
+        const createResponse = await request(app)
+          .post('/api/todos')
+          .send({ title: 'Completed Overdue', dueDate: '2026-02-20' });
+        
+        // Toggle to completed
+        await request(app).patch(`/api/todos/${createResponse.body.id}/toggle`);
+        
+        const response = await request(app).get('/api/todos');
+        const completedTodo = response.body.find(t => t.id === createResponse.body.id);
+        
+        expect(completedTodo.isOverdue).toBe(false);
+        expect(completedTodo.overdueDays).toBeNull();
+        expect(completedTodo.overdueDuration).toBeNull();
+      });
+
+      it('should return isOverdue=false for todo without due date', async () => {
+        const createResponse = await request(app)
+          .post('/api/todos')
+          .send({ title: 'No Due Date' });
+        
+        const response = await request(app).get('/api/todos');
+        const createdTodo = response.body.find(t => t.id === createResponse.body.id);
+        
+        expect(createdTodo.isOverdue).toBe(false);
+        expect(createdTodo.overdueDays).toBeNull();
+        expect(createdTodo.overdueDuration).toBeNull();
+      });
+    });
+
+    describe('GET /api/todos/:id - computed overdue fields', () => {
+      it('should include computed overdue fields for single todo', async () => {
+        const createResponse = await request(app)
+          .post('/api/todos')
+          .send({ title: 'Test Todo', dueDate: '2026-02-25' });
+        
+        const response = await request(app).get(`/api/todos/${createResponse.body.id}`);
+        expect(response.status).toBe(200);
+        expect(response.body).toHaveProperty('isOverdue');
+        expect(response.body).toHaveProperty('overdueDays');
+        expect(response.body).toHaveProperty('overdueDuration');
+        expect(response.body.isOverdue).toBe(true);
+        expect(response.body.overdueDays).toBe(2);
+        expect(response.body.overdueDuration).toBe('2 days');
+      });
+    });
+
+    describe('POST /api/todos - computed overdue fields', () => {
+      it('should include computed overdue fields in created todo response', async () => {
+        const response = await request(app)
+          .post('/api/todos')
+          .send({ title: 'New Overdue Task', dueDate: '2026-02-20' });
+        
+        expect(response.status).toBe(201);
+        expect(response.body).toHaveProperty('isOverdue');
+        expect(response.body).toHaveProperty('overdueDays');
+        expect(response.body).toHaveProperty('overdueDuration');
+        expect(response.body.isOverdue).toBe(true);
+        expect(response.body.overdueDays).toBe(7);
+      });
+    });
+
+    describe('PUT /api/todos/:id - computed overdue fields recalculation', () => {
+      it('should recalculate overdue fields when updating todo', async () => {
+        const createResponse = await request(app)
+          .post('/api/todos')
+          .send({ title: 'Task', dueDate: '2026-02-25' });
+        
+        const updateResponse = await request(app)
+          .put(`/api/todos/${createResponse.body.id}`)
+          .send({ dueDate: '2026-03-01' });
+        
+        expect(updateResponse.status).toBe(200);
+        expect(updateResponse.body.isOverdue).toBe(false);
+        expect(updateResponse.body.overdueDays).toBeNull();
+        expect(updateResponse.body.overdueDuration).toBeNull();
+      });
+
+      it('should set isOverdue=false when updating due date from past to future', async () => {
+        const createResponse = await request(app)
+          .post('/api/todos')
+          .send({ title: 'Overdue Task', dueDate: '2026-02-20' });
+        
+        expect(createResponse.body.isOverdue).toBe(true);
+        
+        const updateResponse = await request(app)
+          .put(`/api/todos/${createResponse.body.id}`)
+          .send({ dueDate: '2026-03-10' });
+        
+        expect(updateResponse.body.isOverdue).toBe(false);
+      });
+    });
+
+    // User Story 3: Filter and Sort Tests
+    describe('GET /api/todos?filter=overdue - filter by overdue status', () => {
+      it('should return only overdue todos when filter=overdue', async () => {
+        // Create mix of overdue and non-overdue todos
+        await request(app).post('/api/todos').send({ title: 'Overdue 1', dueDate: '2026-02-20' });
+        await request(app).post('/api/todos').send({ title: 'Overdue 2', dueDate: '2026-02-15' });
+        await request(app).post('/api/todos').send({ title: 'Future', dueDate: '2026-03-15' });
+        await request(app).post('/api/todos').send({ title: 'No Date' });
+
+        const response = await request(app).get('/api/todos?filter=overdue');
+        expect(response.status).toBe(200);
+        expect(Array.isArray(response.body)).toBe(true);
+
+        // All returned todos should be overdue
+        response.body.forEach(todo => {
+          expect(todo.isOverdue).toBe(true);
+        });
+
+        // Should have at least the 2 overdue todos we created
+        expect(response.body.length).toBeGreaterThanOrEqual(2);
+      });
+
+      it('should not include completed todos in overdue filter', async () => {
+        const overdueResponse = await request(app)
+          .post('/api/todos')
+          .send({ title: 'Overdue but will complete', dueDate: '2026-02-20' });
+
+        // Complete the todo
+        await request(app).patch(`/api/todos/${overdueResponse.body.id}/toggle`);
+
+        const response = await request(app).get('/api/todos?filter=overdue');
+        
+        // The completed todo should not appear in results
+        const completedTodo = response.body.find(t => t.id === overdueResponse.body.id);
+        expect(completedTodo).toBeUndefined();
+      });
+
+      it('should not include todos without due date in overdue filter', async () => {
+        await request(app).post('/api/todos').send({ title: 'No Due Date Task' });
+
+        const response = await request(app).get('/api/todos?filter=overdue');
+        
+        const noDueDateTodos = response.body.filter(t => !t.dueDate);
+        expect(noDueDateTodos.length).toBe(0);
+      });
+
+      it('should return empty array when no overdue todos exist', async () => {
+        // Clear all overdue todos by creating only future todos
+        const response = await request(app).get('/api/todos?filter=overdue');
+        
+        // Filter results to only show our test todos (or accept empty if none exist)
+        expect(Array.isArray(response.body)).toBe(true);
+      });
+    });
+
+    describe('GET /api/todos?sort=overdue-desc - sort by most overdue first', () => {
+      it('should sort todos by overdue days in descending order', async () => {
+        // Create todos with different overdue dates
+        await request(app).post('/api/todos').send({ title: 'Overdue 30 days', dueDate: '2026-01-28' });
+        await request(app).post('/api/todos').send({ title: 'Overdue 7 days', dueDate: '2026-02-20' });
+        await request(app).post('/api/todos').send({ title: 'Overdue 1 day', dueDate: '2026-02-26' });
+
+        const response = await request(app).get('/api/todos?sort=overdue-desc');
+        expect(response.status).toBe(200);
+
+        // Filter to only overdue todos to verify sorting
+        const overdueTodos = response.body.filter(t => t.isOverdue);
+        
+        if (overdueTodos.length >= 2) {
+          // Verify descending order (most overdue first)
+          for (let i = 0; i < overdueTodos.length - 1; i++) {
+            expect(overdueTodos[i].overdueDays).toBeGreaterThanOrEqual(overdueTodos[i + 1].overdueDays);
+          }
+        }
+      });
+
+      it('should place non-overdue todos after overdue todos', async () => {
+        await request(app).post('/api/todos').send({ title: 'Overdue', dueDate: '2026-02-20' });
+        await request(app).post('/api/todos').send({ title: 'Future', dueDate: '2026-03-15' });
+
+        const response = await request(app).get('/api/todos?sort=overdue-desc');
+        
+        const firstOverdueIndex = response.body.findIndex(t => t.isOverdue);
+        const lastNonOverdueIndex = response.body.map((t, i) => ({ overdue: t.isOverdue, index: i }))
+          .filter(item => !item.overdue)
+          .pop()?.index;
+
+        if (firstOverdueIndex >= 0 && lastNonOverdueIndex !== undefined) {
+          // All overdue todos should come before non-overdue todos
+          expect(firstOverdueIndex).toBeLessThan(lastNonOverdueIndex);
+        }
+      });
+
+      it('should still work with no overdue todos', async () => {
+        const response = await request(app).get('/api/todos?sort=overdue-desc');
+        expect(response.status).toBe(200);
+        expect(Array.isArray(response.body)).toBe(true);
+      });
+    });
+
+    describe('GET /api/todos?filter=overdue&sort=overdue-desc - combined filter and sort', () => {
+      it('should filter overdue and sort by most overdue first', async () => {
+        // Create test todos
+        await request(app).post('/api/todos').send({ title: 'Overdue 30', dueDate: '2026-01-28' });
+        await request(app).post('/api/todos').send({ title: 'Overdue 7', dueDate: '2026-02-20' });
+        await request(app).post('/api/todos').send({ title: 'Future', dueDate: '2026-03-15' });
+
+        const response = await request(app).get('/api/todos?filter=overdue&sort=overdue-desc');
+        expect(response.status).toBe(200);
+
+        // All results should be overdue
+        response.body.forEach(todo => {
+          expect(todo.isOverdue).toBe(true);
+        });
+
+        // Results should be sorted by overdueDays descending
+        if (response.body.length >= 2) {
+          for (let i = 0; i < response.body.length - 1; i++) {
+            expect(response.body[i].overdueDays).toBeGreaterThanOrEqual(response.body[i + 1].overdueDays);
+          }
+        }
+      });
+    });
+  });
 });

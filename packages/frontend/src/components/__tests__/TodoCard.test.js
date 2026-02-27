@@ -99,4 +99,74 @@ describe('TodoCard Component', () => {
     
     expect(screen.queryByText(/Due:/)).not.toBeInTheDocument();
   });
+
+  // Overdue Indicator Integration Tests
+  describe('Overdue Indicator Integration', () => {
+    it('should render overdue indicator when todo is overdue', () => {
+      const overdueTodo = {
+        ...mockTodo,
+        isOverdue: true,
+        overdueDays: 7,
+        overdueDuration: '7 days'
+      };
+      
+      render(<TodoCard todo={overdueTodo} {...mockHandlers} isLoading={false} />);
+      
+      expect(screen.getByText(/7 days overdue/i)).toBeInTheDocument();
+      expect(screen.getByRole('status')).toBeInTheDocument();
+    });
+
+    it('should not render overdue indicator when todo is not overdue', () => {
+      const notOverdueTodo = {
+        ...mockTodo,
+        isOverdue: false,
+        overdueDays: null,
+        overdueDuration: null
+      };
+      
+      render(<TodoCard todo={notOverdueTodo} {...mockHandlers} isLoading={false} />);
+      
+      expect(screen.queryByText(/overdue/i)).not.toBeInTheDocument();
+      expect(screen.queryByRole('status')).not.toBeInTheDocument();
+    });
+
+    it('should not render overdue indicator for completed todo (even if past due)', () => {
+      const completedOverdueTodo = {
+        ...mockTodo,
+        completed: 1,
+        isOverdue: false,
+        overdueDays: null,
+        overdueDuration: null
+      };
+      
+      render(<TodoCard todo={completedOverdueTodo} {...mockHandlers} isLoading={false} />);
+      
+      expect(screen.queryByText(/overdue/i)).not.toBeInTheDocument();
+    });
+
+    it('should render overdue indicator with months when overdue for long time', () => {
+      const longOverdueTodo = {
+        ...mockTodo,
+        isOverdue: true,
+        overdueDays: 60,
+        overdueDuration: '2 months'
+      };
+      
+      render(<TodoCard todo={longOverdueTodo} {...mockHandlers} isLoading={false} />);
+      
+      expect(screen.getByText(/2 months overdue/i)).toBeInTheDocument();
+    });
+
+    it('should handle todo without overdue fields (backward compatibility)', () => {
+      const todoWithoutOverdueFields = {
+        ...mockTodo
+        // No isOverdue, overdueDays, or overdueDuration fields
+      };
+      
+      // Should not crash, just not render indicator
+      render(<TodoCard todo={todoWithoutOverdueFields} {...mockHandlers} isLoading={false} />);
+      
+      expect(screen.queryByText(/overdue/i)).not.toBeInTheDocument();
+    });
+  });
 });
